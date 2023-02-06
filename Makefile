@@ -7,7 +7,7 @@ DATA_DIR := $(ROOT_DIR)/data  # This may not be in the root directory.
 RESULTS_DIR := $(ROOT_DIR)/results  # Many of the batch files will pull data from here.
 SOURCE_DIR := $(ROOT_DIR)/src
 EXPRESSION_DATA := /mnt/research/edgerpat_lab/MSU_GenomicsCore_Sequencing_2018/VaccBSGW_Bnap_20181005_RNASeq_PE150/VaccBSGW
-ADAPTOR_FASTA_FILE := $DATA_DIR/adaptors/TruSeq3-PE.fa
+ADAPTOR_FASTA_FILE := $(DATA_DIR)/adaptors/TruSeq3-PE.fa
 
 EXPRESSION_FILE_NAMES :=  $(DATA_DIR)/expression_file_names.txt
 
@@ -21,6 +21,6 @@ gen_expression_file_names:
 	ls $(EXPRESSION_DATA) > $(DATA_DIR)/$(EXPRESSION_FILE_NAMES)
 
 trimmomatic:
-	sbatch $(SOURCE_DIR)/trimmomatic.sb
+	sbatch $(SOURCE_DIR)/trimmomatic.sb $(EXPRESSION_DATA) $(ADAPTOR_FASTA_FILE) $(RESULTS_DIR)
 
 

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-#SBATCH --job-name=blueberry_trimmomatic
+#SBATCH --job-name=fern_trimmomatic
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=2
 #SBATCH --mem-per-cpu=8G
@@ -16,24 +16,24 @@ echo ""
 module purge
 module load Trimmomatic/0.39-Java-11
 
-DATA_DIR=/mnt/research/edgerpat_lab/Alder/Alder_Blueberry_RNA_Seq/data 
-EXPRESSION_DATA=/mnt/research/edgerpat_lab/MSU_GenomicsCore_Sequencing_2018/VaccBSGW_Bnap_20181005_RNASeq_PE150/VaccBSGW
-ADAPTOR_FASTA_FILE=$DATA_DIR/adaptors/TruSeq3-PE.fa
-RESULTS_DIR=/mnt/research/edgerpat_lab/Alder/Alder_Blueberry_RNA_Seq/results/trimmomatic
+EXPRESSION_DATA=$1
+EXPRESSION_FILE_NAMES=$2
+ADAPTOR_FASTA_FILE=$3
+OUTPUT_DIR=$4
 
 FORWARD_FILE_NUMBER=$(expr $SLURM_ARRAY_TASK_ID \* 2 - 1)
 BACKWARD_FILE_NUMBER=$(expr $SLURM_ARRAY_TASK_ID \* 2)
-FORWARD_FILE_NAME=$(sed -n "$FORWARD_FILE_NUMBER p" $DATA_DIR/expression_file_names.txt)
-BACKWARD_FILE_NAME=$(sed -n "$BACKWARD_FILE_NUMBER p" $DATA_DIR/expression_file_names.txt)
+FORWARD_FILE_NAME=$(sed -n "$FORWARD_FILE_NUMBER p" $EXPRESSION_FILE_NAMES)
+BACKWARD_FILE_NAME=$(sed -n "$BACKWARD_FILE_NUMBER p" $EXPRESSION_FILE_NAMES)
 PREFIX=$(echo $FORWARD_FILE_NAME | awk -F"_R" '{print $1}')
 
 java -jar $EBROOTTRIMMOMATIC/trimmomatic-0.39.jar PE -threads 2 \
 $EXPRESSION_DATA/$FORWARD_FILE_NAME \
 $EXPRESSION_DATA/$BACKWARD_FILE_NAME \
-$RESULTS_DIR/${PREFIX}_forward_paired.fq.fa \
-$RESULTS_DIR/${PREFIX}_forward_unpaired.fq.fa \
-$RESULTS_DIR/${PREFIX}_reversed_paired.fq.fa \
-$RESULTS_DIR/${PREFIX}_reversed_unpaired.fq.fa \
+$OUTPUT_DIR/${PREFIX}_forward_paired.fq.fa \
+$OUTPUT_DIR/${PREFIX}_forward_unpaired.fq.fa \
+$OUTPUT_DIR/${PREFIX}_reversed_paired.fq.fa \
+$OUTPUT_DIR/${PREFIX}_reversed_unpaired.fq.fa \
 ILLUMINACLIP:$ADAPTOR_FASTA_FILE:2:30:10 \
 HEADCROP:15 AVGQUAL:25 TRAILING:30
 
