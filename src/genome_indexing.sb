@@ -1,0 +1,29 @@
+#!/bin/bash
+
+#SBATCH --job-name=Blueberry_RNA_Seq
+#SBATCH --ntasks=1
+#SBATCH --cpus-per-task=8
+#SBATCH --mem-per-cpu=60G
+#SBATCH --time=08:00:00
+#SBATCH --output=/mnt/research/edgerpat_lab/Alder/Alder_Blueberry_RNA_Seq/slurm_output/genome_indexing_slurm.out
+
+echo ""
+echo "Job Information"
+echo "Job ID:" $SLURM_JOB_ID
+echo ""
+
+module purge
+module load GCC/10.3.0 STAR/2.7.9a
+
+DATA_DIR=$1
+FASTA=$2
+GFF=$3
+RESULTS_DIR=$4
+
+STAR \
+--runMode genomeGenerate \
+--genomeDir $RESULTS_DIR \
+--genomeFastaFiles $FASTA \
+--sjdbGTFfile $GFF \
+--runThreadN 16 \
+--sjdbGTFtagExonParentTranscript Parent

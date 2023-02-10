@@ -23,4 +23,5 @@ gen_expression_file_names:
 trimmomatic:
 	sbatch $(SOURCE_DIR)/trimmomatic.sb $(EXPRESSION_DATA) $(ADAPTOR_FASTA_FILE) $(RESULTS_DIR)
 
-
+STAR_indexing:
+	sbatch $(SOURCE_DIR)/genome_indexing.sb $(DATA_DIR) $(DATA_DIR)/V_corymbosum_genome_v1.0.fasta $(DATA_DIR)/V_corymbosum_v1.0_geneModels.gff $(RESULTS_DIR)/genome_indexing
